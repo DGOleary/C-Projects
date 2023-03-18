@@ -27,7 +27,9 @@ for(int i=0;i<8;i++){
 }
 
 void printBoard(){
+    cout << "  A  B  C  D  E  F  G  H \n";
 for(int i=0;i<8;i++){
+    cout << i+1;
     for(int j=0;j<8;j++){
         cout << game_board[i][j];
     }
