@@ -4,55 +4,83 @@
 
 using namespace std;
 
-bool moveCheck(std::string m){
-    if(m.length()>2){
-            cout << "Incorrect move, Word your moves as Letter, then Number of the spot, Example: A1\n";
-            return false;
-        }
-        char col = m[0];
-        if(col<65||col>72){
-            cout << "Incorrect move, Column must be between A and H\n";
-            return false;
-        }
-        int row = atoi(&m[1]);
-        if(row<1||row>8){
-            cout << "Incorrect move, Row must be between 1 and 8\n";
-            return false;
-        }
-        return false;
-}
+bool moveCheck(string m, char *c, int *i);
+
+bool spotMove(string temp);
 
 int main(){
-    
     board board;
-    board.printBoard();
-    board.makeMove(2,1,3,2);
-    cout << "\n";
-    // board.printBoard();
-    // string t = "123456";
-    // string s(1,t[0]), a(1,t[1]);
-    // cout << stoi(s) <<"\n";
-    // int x = stoi(s)+stoi(a);
-    // cout << x <<"\n";
-    cout << "Word your moves as Letter, then Number of the spot, Example: A1\n";
+    char col;
+    int row;
+    char n_col;
+    int n_row;
+    cout << "Word your moves as Letter, then Number of the spot, Example: A1\n\n";
     while(!board.getWon()){
         string move;
+        board.printBoard();
         cout << "Current Player: ";
-        if(board.getWon()){
+        if(board.getPlayer()){
             cout << "X's\n";
         }else{
             cout << "O's\n";
+        }
         cout << "Select piece to move: ";
         cin >> move;
-        //cin.clear();
-        while(!moveCheck(move)){
+        cout << "\n";
+        while(!moveCheck(move, &col, &row)){
             cout << "Select piece to move: ";
             cin >> move;
+            cout << "\n";
         }
 
-   }
+        cout << "Select spot to move to, r or l: ";
+        cin >> move;
+        cout << "\n";
+        while(!spotMove(move)){
+            cout << "Select spot to move to, r or l: ";
+            cin >> move;
+            cout << move << " \n";
+        }
+  
+        if(board.getPlayer()){
+        if(move=="r"){
+            board.makeMove(row-1, (int)col-65, row, ((int)col+1)-65);
+        }else{
+            board.makeMove(row-1, (int)col-65, row, ((int)col-1)-65);
+        }
+        }else{
+        if(move=="r"){
+            board.makeMove(row-1, (int)col-65, row-2, ((int)col+1)-65);
+        }else{
+            board.makeMove(row-1, (int)col-65, row-2, ((int)col-1)-65);
+        }
+        }
+        
 }
 return 0;
 }
 
+bool moveCheck(std::string m, char *c, int *i){
+    if(m.length()!=2){
+            cout << "Incorrect move, Word your moves as Letter, then Number of the spot, Example: A1\n";
+            return false;
+        }
+        *c = m[0];
+        if(*c<65||*c>72){
+            cout << "Incorrect move, Column must be between A and H\n";
+            return false;
+        }
+        *i = atoi(&m[1]);
+        if(*i<1||*i>8){
+            cout << "Incorrect move, Row must be between 1 and 8\n";
+            return false;
+        }
+        return true;
+}
 
+bool spotMove(string temp){
+if(temp=="l"||temp=="r"){
+return true;
+}
+return false;
+}

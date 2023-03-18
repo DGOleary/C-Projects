@@ -26,6 +26,10 @@ for(int i=0;i<8;i++){
 }
 }
 
+bool getPlayer(){
+    return player;
+}
+
 void printBoard(){
     cout << "  A  B  C  D  E  F  G  H \n";
 for(int i=0;i<8;i++){
@@ -45,7 +49,7 @@ if(player&&game_board[x][y]==("|X|")){
        player=!player;
        return;
     }
-}else if(!player&&game_board[x][y]==("|O|")){
+}else if((!player)&&game_board[x][y]==("|O|")){
     if(x!=xn&&y!=yn){
        game_board[x][y]="|_|";
        game_board[xn][yn]="|O|";
