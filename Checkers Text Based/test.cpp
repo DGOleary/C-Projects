@@ -8,6 +8,8 @@ bool moveCheck(string m, char *c, int *i);
 
 bool spotMove(string temp);
 
+bool kingMove(string temp);
+
     Board board;
     char col;
     int row;
@@ -25,22 +27,24 @@ int main(){
         }else{
             cout << "O's\n";
         }
-        cout << "Select piece to move: ";
-        cin >> move;
-        cout << "\n";
+         cout << "Select piece to move: ";
+         cin >> move;
+         cout << "\n";
+         bool king=false;
         while(!moveCheck(move, &col, &row)){
+            //add check to see if the piece has possible moves
             cout << "Select piece to move: ";
             cin >> move;
             cout << "\n";
         }
-
-        cout << "Select spot to move to, r or l: ";
-        cin >> move;
-        cout << "\n";
+        if(board.getCheckState(row-1, (int)col-65)){
+            king=true;
+        }
         
   
         bool run = false;
 while(!run){
+    if(!king){
             while(!spotMove(move)){
             cout << "Select spot to move to, r or l: ";
             cin >> move;
@@ -48,6 +52,7 @@ while(!run){
         }
         if(board.getPlayer()){
         if(move=="r"){
+            //-65 accounts for ascii value of letters to turn them into numbers
             run = board.makeMove(row-1, (int)col-65, row, ((int)col+1)-65);
         }else{
             run = board.makeMove(row-1, (int)col-65, row, ((int)col-1)-65);
@@ -60,8 +65,37 @@ while(!run){
         }
         }
         move="";
-        } 
+        
+    }else{
+        //section for king moves which can go in any direction
+        while(!kingMove(move)){
+            cout << "Select direction to move to, u or d: ";
+            cin >> move;
+            cout << move << " \n";
+        }
+        string vert_move=move;
+        while(!spotMove(move)){
+            cout << "Select spot to move to, r or l: ";
+            cin >> move;
+            cout << move << " \n";
+        }
+        //whether going up or down
+            int vert_amt=0;
+            if(vert_move=="u"){
+                vert_amt=-1;
+            }else{
+                vert_amt=1;
+            }
+        if(move=="r"){
+            //-65 accounts for ascii value of letters to turn them into numbers
+            run = board.makeMove(row-1, (int)col-65, (row-1)+vert_amt, ((int)col+1)-65);
+        }else{
+            run = board.makeMove(row-1, (int)col-65, (row-1)+vert_amt, ((int)col-1)-65);
+        }
+        move="";
 }
+}
+    }
 return 0;
 }
 
@@ -92,11 +126,22 @@ bool moveCheck(std::string m, char *c, int *i){
                 return false;
             }
         }
+        if(board.getSpot(row-1,(int)col-65)=="|_|"){
+                cout << "Incorrect move, no piece is in that spot\n";
+                return false;
+        }
         return true;
 }
 
 bool spotMove(string temp){
 if(temp=="l"||temp=="r"){
+return true;
+}
+return false;
+}
+
+bool kingMove(string temp){
+if(temp=="u"||temp=="d"){
 return true;
 }
 return false;
