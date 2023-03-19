@@ -10,6 +10,7 @@ bool spotMove(string temp);
 
 bool kingMove(string temp);
 
+bool possibleMoves(int x, int y);
     Board board;
     char col;
     int row;
@@ -130,9 +131,13 @@ bool moveCheck(std::string m, char *c, int *i){
                 cout << "Incorrect move, no piece is in that spot\n";
                 return false;
         }
+        if(!possibleMoves(row-1,(int)col-65)){
+            
+        }
         return true;
 }
 
+//test loops while making move
 bool spotMove(string temp){
 if(temp=="l"||temp=="r"){
 return true;
@@ -145,4 +150,8 @@ if(temp=="u"||temp=="d"){
 return true;
 }
 return false;
+}
+
+bool possibleMoves(int x, int y){
+
 }

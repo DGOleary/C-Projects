@@ -15,17 +15,17 @@ bool won;
 //game is won when one person reaches 0 pieces
 int x_count;
 int o_count;
-
+void checkWin();
+bool checkCap(int x, int y, int xn, int yn);
+void checkKing(int x, int y);
+bool validMove(int x, int y, int xn, int yn);
 public:
 Board();
 bool getPlayer();
 void printBoard();
 bool makeMove(int x, int y, int xn, int yn);
-bool validMove(int x, int y, int xn, int yn);
-bool checkCap(int x, int y, int xn, int yn);
 bool getWon();
 string getSpot(int x, int y);
-void MakeKing(int x);
 bool getCheckState(int x, int y);
 };
 #endif
