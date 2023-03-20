@@ -1,4 +1,7 @@
+
+#include <string>
 #include "Checker.h"
+
 using namespace std;
 
 Checker::Checker(){
@@ -20,10 +23,9 @@ if(t){
     team='o';
     label="|o|";
 }
-
 }
 
-bool Checker::getState(){
+bool Checker::getKing(){
     return king;
 }
 
@@ -52,4 +54,14 @@ void Checker::setPos(int x, int y){
 
 string Checker::getLabel(){
     return label;
+}
+
+bool Checker::getTeamBool(){
+    if(team=='x'){
+        return true;
+    }else if(team=='o'){
+        return false;
+    }else{
+        throw "no team";
+    }
 }

@@ -1,5 +1,6 @@
 #ifndef CHECKER_H
 #define CHECKER_H
+#include <string>
 using namespace std;
 class Checker{
 private:
@@ -12,10 +13,11 @@ public:
 //team and position
 Checker();
 Checker(bool t, int x, int y);
-bool getState();
+bool getKing();
 int* getPos();
 void makeKing();
 char getTeam();
+bool getTeamBool();
 void setPos(int x, int y);
 string getLabel();
 };

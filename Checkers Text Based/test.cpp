@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
-#include "Board.cpp"
+#include "Board.h"
+#include "Checker.h"
 
 using namespace std;
 
@@ -11,6 +12,7 @@ bool spotMove(string temp);
 bool kingMove(string temp);
 
 bool possibleMoves(int x, int y);
+
     Board board;
     char col;
     int row;
@@ -38,7 +40,7 @@ int main(){
             cin >> move;
             cout << "\n";
         }
-        if(board.getCheckState(row-1, (int)col-65)){
+        if(board.getCheckKing(row-1, (int)col-65)){
             king=true;
         }
         
@@ -54,18 +56,36 @@ while(!run){
         if(board.getPlayer()){
         if(move=="r"){
             //-65 accounts for ascii value of letters to turn them into numbers
-            run = board.makeMove(row-1, (int)col-65, row, ((int)col+1)-65);
+            if(board.validMove(row-1, (int)col-65, row, ((int)col+1)-65)){
+                run = board.makeMove(row-1, (int)col-65, row, ((int)col+1)-65);
+            }else{
+                //alternate moves move one over in each direction its going in an attempt to capture
+                run = board.makeMove(row-1, (int)col-65, row+1, ((int)col+2)-65);
+            }
+            
         }else{
-            run = board.makeMove(row-1, (int)col-65, row, ((int)col-1)-65);
+            if(board.validMove(row-1, (int)col-65, row, ((int)col-1)-65)){
+                run = board.makeMove(row-1, (int)col-65, row, ((int)col-1)-65);
+            }else{
+                run = board.makeMove(row-1, (int)col-65, row+1, ((int)col-2)-65);
+            }
         }
         }else{
         if(move=="r"){
-            run = board.makeMove(row-1, (int)col-65, row-2, ((int)col+1)-65);
+            if(board.validMove(row-1, (int)col-65, row-2, ((int)col+1)-65)){
+                run = board.makeMove(row-1, (int)col-65, row-2, ((int)col+1)-65);
+            }else{
+                run = board.makeMove(row-1, (int)col-65, row-3, ((int)col+2)-65);
+            }
         }else{
-            run = board.makeMove(row-1, (int)col-65, row-2, ((int)col-1)-65);
+            if(board.validMove(row-1, (int)col-65, row-2, ((int)col-1)-65)){
+                run = board.makeMove(row-1, (int)col-65, row-2, ((int)col-1)-65);
+            }else{
+                run = board.makeMove(row-1, (int)col-65, row-3, ((int)col-2)-65);
+            }
         }
         }
-        move="";
+        //move="";
         
     }else{
         //section for king moves which can go in any direction
@@ -87,16 +107,30 @@ while(!run){
             }else{
                 vert_amt=1;
             }
+            //move right, adds the vertical direction to the move
         if(move=="r"){
             //-65 accounts for ascii value of letters to turn them into numbers
-            run = board.makeMove(row-1, (int)col-65, (row-1)+vert_amt, ((int)col+1)-65);
+            if(board.validMove(row-1, (int)col-65, (row-1)+vert_amt, ((int)col+1)-65)){
+                //cout << row-1  << " " <<(int)col-65 << "\n wrong \n";
+                run = board.makeMove(row-1, (int)col-65, (row-1)+vert_amt, ((int)col+1)-65);
+            }else{
+                run = board.makeMove(row-1, (int)col-65, (row-1)+(2*vert_amt), ((int)col+2)-65);
+            }
+            //move left
         }else{
-            run = board.makeMove(row-1, (int)col-65, (row-1)+vert_amt, ((int)col-1)-65);
+            if(board.validMove(row-1, (int)col-65, (row-1)+vert_amt, ((int)col-1)-65)){
+                run = board.makeMove(row-1, (int)col-65, (row-1)+vert_amt, ((int)col-1)-65);
+            }else{
+                run = board.makeMove(row-1, (int)col-65, (row-1)+(2*vert_amt), ((int)col-2)-65);
+            }
         }
-        move="";
+        //move="";
 }
+//cout << "end reached \n";
+move="";
 }
     }
+    cout << board.getWinner() << " wins!\n";
 return 0;
 }
 
@@ -104,35 +138,44 @@ return 0;
 bool moveCheck(std::string m, char *c, int *i){
     if(m.length()!=2){
             cout << "Incorrect move, Word your moves as Letter, then Number of the spot, Example: A1\n";
+            board.printBoard();
             return false;
         }
         *c = m[0];
         if(*c<65||*c>72){
             cout << "Incorrect move, Column must be between A and H\n";
+            board.printBoard();
             return false;
         }
         *i = atoi(&m[1]);
         if(*i<1||*i>8){
             cout << "Incorrect move, Row must be between 1 and 8\n";
+            board.printBoard();
             return false;
         }
         if(board.getPlayer()){
-            if(board.getSpot(row-1,(int)col-65)=="|o|"){
+            if(board.getSpot(row-1,(int)col-65)=="|o|"||board.getSpot(row-1,(int)col-65)=="|O|"){
                 cout << "Incorrect move, you are playing as \"X\"\n";
+                board.printBoard();
                 return false;
             }
         }else{
-                if(board.getSpot(row-1,(int)col-65)=="|x|"){
+                if(board.getSpot(row-1,(int)col-65)=="|x|"||board.getSpot(row-1,(int)col-65)=="|X|"){
                 cout << "Incorrect move, you are playing as \"o\"\n";
+                board.printBoard();
                 return false;
             }
         }
         if(board.getSpot(row-1,(int)col-65)=="|_|"){
                 cout << "Incorrect move, no piece is in that spot\n";
+                board.printBoard();
                 return false;
         }
-        if(!possibleMoves(row-1,(int)col-65)){
-            
+
+        if(!possibleMoves(row-1,(int)col-65)&&!board.possibleCap(row-1,(int)col-65)){
+                cout << "Incorrect move, no possible moves at that spot\n";
+                board.printBoard();
+                return false;
         }
         return true;
 }
@@ -153,5 +196,33 @@ return false;
 }
 
 bool possibleMoves(int x, int y){
-
+if(board.getPlayer()||board.getCheckKing(x,y)){
+    try{
+        if(board.validMove(x,y,x+1,y+1)){
+            return true;
+        }
+        }catch (...){
+    }
+    try{
+        if(board.validMove(x,y,x+1,y-1)){
+            return true;
+        }
+    }catch (...){
+    }
+}
+if(!board.getPlayer()||board.getCheckKing(x,y)){
+    try{
+        if(board.validMove(x,y,x-1,y+1)){
+            return true;
+        }
+        }catch (...){
+    }
+    try{
+        if(board.validMove(x,y,x-1,y-1)){
+            return true;
+        }
+    }catch (...){
+    }
+}
+return false;
 }

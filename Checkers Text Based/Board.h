@@ -18,14 +18,17 @@ int o_count;
 void checkWin();
 bool checkCap(int x, int y, int xn, int yn);
 void checkKing(int x, int y);
-bool validMove(int x, int y, int xn, int yn);
 public:
 Board();
+bool validMove(int x, int y, int xn, int yn);
 bool getPlayer();
 void printBoard();
 bool makeMove(int x, int y, int xn, int yn);
 bool getWon();
 string getSpot(int x, int y);
-bool getCheckState(int x, int y);
+bool getCheckKing(int x, int y);
+string getWinner();
+bool possibleCap(int x, int y);
+void multiCap(int x, int y);
 };
 #endif
