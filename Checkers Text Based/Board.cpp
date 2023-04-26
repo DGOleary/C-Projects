@@ -54,8 +54,8 @@ for(int i=0;i<8;i++){
 
 bool Board::makeMove(int x, int y, int xn, int yn){
      //cout << x << " " << y << " " << xn << " " << yn << "\n"; 
+bool cap=false;
 if(validMove(x,y,xn,yn)){
-    bool cap=false;
     if(checkCap(x,y,xn,yn)){
         if(!player){
             x_count--;
@@ -78,7 +78,7 @@ if(validMove(x,y,xn,yn)){
        checkKing(xn,yn);
        game_board[x][y]=piece_board[x][y].getLabel();
        game_board[xn][yn]=piece_board[xn][yn].getLabel();
-       if(possibleCap(xn,yn)){
+       if(possibleCap(xn,yn)&&cap){
        multiCap(xn,yn);
        }else{
         player=!player;
